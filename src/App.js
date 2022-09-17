@@ -3,9 +3,27 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useState } from "react";
+import { useEffect } from "react";
 
 function App() {
-  const [countries, setCountries] = useState(['USA','UK','INDIA'])
+  const [countries, setCountries] = useState([])
+
+  useEffect(() => {
+    const getCountriesData = async () => {
+      fetch("https://disease.sh/v3/covid-19/countries")
+        .then((response) => response.json())
+        .then((data) => {
+          const countries = data.map((country) => ({
+            name: country.country,
+            value: country.countryInfo.iso2,
+          }));
+          // let sortedData = sortData(data);
+          setCountries(countries);
+        });
+    };
+
+    getCountriesData();
+  }, []);
 
   return (
     <div className="App">
@@ -15,7 +33,7 @@ function App() {
         <Select varient="outlined" value="abc">
           {/* Looping through country names */}
           {countries.map(country => (
-            <MenuItem value={country}>{country}</MenuItem>
+            <MenuItem value={country.value}>{country.name}</MenuItem>
           ))}
 
 
