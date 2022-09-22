@@ -4,9 +4,11 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useState } from "react";
 import { useEffect } from "react";
+import Infobox from "./Infobox";
 
 function App() {
-  const [countries, setCountries] = useState([])
+  const [countries, setCountries] = useState([]);
+  const [country, setCountry] = useState("worldwide");
 
   useEffect(() => {
     const getCountriesData = async () => {
@@ -25,34 +27,33 @@ function App() {
     getCountriesData();
   }, []);
 
+  const onChangeCountry = async (event) => {
+    const countryCode = event.target.value;
+    setCountry(countryCode);
+  };
+
   return (
     <div className="App">
       <div className="app__header">
-      <h1>COVID-19 TRACKER APP</h1>
-      <FormControl className="app__dropdown">
-        <Select varient="outlined" value="abc">
-          {/* Looping through country names */}
-          {countries.map(country => (
-            <MenuItem value={country.value}>{country.name}</MenuItem>
-          ))}
-
-
-          {/* <MenuItem value="worldwide">Worldwide</MenuItem>
-          <MenuItem value="worldwide">Worldwide</MenuItem>
-          <MenuItem value="worldwide">Worldwide</MenuItem>
-          <MenuItem value="worldwide">Worldwide</MenuItem>
-          <MenuItem value="worldwide">Worldwide</MenuItem>
-          <MenuItem value="worldwide">Worldwide</MenuItem> */}
-        </Select>
-      </FormControl>
+        <h1>COVID-19 TRACKER APP</h1>
+        <FormControl className="app__dropdown">
+          <Select varient="outlined" value={country} onChange={onChangeCountry}>
+            <MenuItem value="worldwide">Worldwide</MenuItem>
+            {/* Looping through country names */}
+            {countries.map((country) => (
+              <MenuItem value={country.value} key={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
 
-      {/* Headers */}
-      {/* Title + Select Dropdown */}
-
-      {/* Info boxes */}
-      {/* Info boxes */}
-      {/* Info boxes */}
+      <div className="app__stats">
+        <Infobox title="Covid-19 Cases" cases={5000} total={2000}/>
+        <Infobox title="Recovered" cases={5000} total={1000}/>
+        <Infobox title="Deaths" cases={5000} total={500}/>
+      </div>
 
       {/* Table */}
       {/* Graph */}
