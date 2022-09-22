@@ -2,8 +2,8 @@ import React from 'react'
 
 function Map() {
   return (
-    <div>
-      
+    <div className='map'>
+      <h1>Map here</h1>
     </div>
   )
 }

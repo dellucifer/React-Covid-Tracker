@@ -5,6 +5,10 @@ import Select from "@mui/material/Select";
 import { useState } from "react";
 import { useEffect } from "react";
 import Infobox from "./Infobox";
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Map from "./Map";
+import { Card } from "@mui/material";
+import CardContent from "@mui/material/CardContent";
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -33,32 +37,46 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div className="app__header">
-        <h1>COVID-19 TRACKER APP</h1>
-        <FormControl className="app__dropdown">
-          <Select varient="outlined" value={country} onChange={onChangeCountry}>
-            <MenuItem value="worldwide">Worldwide</MenuItem>
-            {/* Looping through country names */}
-            {countries.map((country) => (
-              <MenuItem value={country.value} key={country.name}>
-                {country.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+    <div className="app">
+      <div className="app__left">
+        <div className="app__header">
+          <h1>COVID-19 TRACKER APP</h1>
+          {/* <FontAwesomeIcon icon="fa-solid fa-virus-covid" /> */}
+          <FormControl className="app__dropdown">
+            <Select
+              varient="outlined"
+              value={country}
+              onChange={onChangeCountry}
+            >
+              <MenuItem value="worldwide">Worldwide</MenuItem>
+              {/* Looping through country names */}
+              {countries.map((country) => (
+                <MenuItem value={country.value} key={country.name}>
+                  {country.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+
+        <div className="app__stats">
+          <Infobox title="Covid-19 Cases" cases={5000} total={2000} />
+          <Infobox title="Recovered" cases={5000} total={1000} />
+          <Infobox title="Deaths" cases={5000} total={500} />
+        </div>
+
+        {/* Map */}
+        <Map />
       </div>
 
-      <div className="app__stats">
-        <Infobox title="Covid-19 Cases" cases={5000} total={2000}/>
-        <Infobox title="Recovered" cases={5000} total={1000}/>
-        <Infobox title="Deaths" cases={5000} total={500}/>
-      </div>
-
-      {/* Table */}
-      {/* Graph */}
-
-      {/* Map */}
+      <Card className="app__right">
+        <CardContent>
+          <h3>Country wise cases</h3>
+          {/* Table */}
+          <h3>Worldwide cases</h3>
+          {/* Graph */}
+        </CardContent>
+      </Card>
     </div>
   );
 }
