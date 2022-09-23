@@ -9,10 +9,26 @@ import Infobox from "./Infobox";
 import Map from "./Map";
 import { Card } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
+import Table from './Table'
+import {sortData} from './util';
+import LineGraph from "./LineGraph";
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
+  const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([])
+
+  useEffect(() => {
+    const getInfo = async () => {
+      fetch("https://disease.sh/v3/covid-19/all")
+        .then((response) => response.json())
+        .then((data) => {
+          setCountryInfo(data);
+        });
+    };
+    getInfo();
+  }, []);
 
   useEffect(() => {
     const getCountriesData = async () => {
@@ -24,7 +40,9 @@ function App() {
             value: country.countryInfo.iso2,
           }));
           // let sortedData = sortData(data);
+          const sortedData = sortData(data);
           setCountries(countries);
+          setTableData(sortedData)
         });
     };
 
@@ -34,6 +52,18 @@ function App() {
   const onChangeCountry = async (event) => {
     const countryCode = event.target.value;
     setCountry(countryCode);
+
+    const url =
+      countryCode === "worldwide"
+        ? "https://disease.sh/v3/covid-19/all"
+        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setCountry(countryCode);
+        setCountryInfo(data);
+      });
   };
 
   return (
@@ -60,9 +90,21 @@ function App() {
         </div>
 
         <div className="app__stats">
-          <Infobox title="Covid-19 Cases" cases={5000} total={2000} />
-          <Infobox title="Recovered" cases={5000} total={1000} />
-          <Infobox title="Deaths" cases={5000} total={500} />
+          <Infobox
+            title="Covid-19 Cases"
+            cases={countryInfo.todayCases}
+            total={countryInfo.cases}
+          />
+          <Infobox
+            title="Recovered"
+            cases={countryInfo.todayRecovered}
+            total={countryInfo.recovered}
+          />
+          <Infobox
+            title="Deaths"
+            cases={countryInfo.todayDeaths}
+            total={countryInfo.deaths}
+          />
         </div>
 
         {/* Map */}
@@ -73,8 +115,11 @@ function App() {
         <CardContent>
           <h3>Country wise cases</h3>
           {/* Table */}
+          <Table countries={tableData}/>
+
           <h3>Worldwide cases</h3>
           {/* Graph */}
+          <LineGraph/>
         </CardContent>
       </Card>
     </div>
